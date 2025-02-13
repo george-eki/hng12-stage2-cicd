@@ -22,11 +22,12 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 100.26.41.206 >> ~/.ssh/known_hosts
+          ssh-keyscan -H 44.201.229.108 >> ~/.ssh/known_hosts
+
 
       - name: Deploy to EC2
         run: |
-          ssh ubuntu@100.26.41.206 << 'EOF'
+          ssh ubuntu@44.201.229.108 << 'EOF'
             export PATH=/bin:/usr/bin:$PATH
 
 
