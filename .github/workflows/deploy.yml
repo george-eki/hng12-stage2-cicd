@@ -26,7 +26,7 @@ jobs:
           ssh ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
             set -e
 
-            APP_DIR="/home/ubuntu/app"
+            APP_DIR="/home/ubuntu/api"
 
             if [ ! -d "$APP_DIR/.git" ]; then
               git clone https://github.com/george-eki/hng12-stage2-cicd.git $APP_DIR
@@ -42,3 +42,4 @@ jobs:
 
             sudo systemctl restart nginx
           EOF
+
