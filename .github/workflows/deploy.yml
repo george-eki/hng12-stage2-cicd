@@ -27,7 +27,7 @@ jobs:
       - name: Deploy to EC2
         run: |
           ssh ubuntu@100.26.41.206 << 'EOF'
-            set -e
+            export PATH=/bin:/usr/bin:$PATH
 
 
             if [ ! -d "hng12-stage2-cicd" ]; then
