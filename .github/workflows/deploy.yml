@@ -14,24 +14,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: action/checkout@v4
+
       - name: Set up SSH Key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H 100.26.41.206 >> ~/.ssh/known_hosts
 
       - name: Deploy to EC2
         run: |
-          ssh ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+          ssh ubuntu@100.26.41.206 << 'EOF'
             set -e
 
-            APP_DIR="/home/ubuntu/api"
 
-            if [ ! -d "$APP_DIR/.git" ]; then
-              git clone https://github.com/george-eki/hng12-stage2-cicd.git $APP_DIR
+            if [ ! -d "hng12-stage2-cicd" ]; then
+              git clone https://github.com/george-eki/hng12-stage2-cicd.git
             fi
-            cd $APP_DIR
+
+            cd hng12-stage2-cicd
             git pull origin main
 
             docker stop fastapi-app || true
