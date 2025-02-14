@@ -1,0 +1,48 @@
+name: Deploy pipeline
+
+
+on:
+  push:
+    branches:
+      - main
+
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 54.205.23.211 >> ~/.ssh/known_hosts
+
+
+      - name: Deploy to EC2
+        run: |
+          ssh ubuntu@54.205.23.211 << 'EOF'
+            export PATH=/bin:/usr/bin:$PATH
+
+
+            if [ ! -d "hng12-stage2-cicd" ]; then
+              git clone https://github.com/george-eki/hng12-stage2-cicd.git
+            fi
+
+            cd hng12-stage2-cicd
+            git pull origin main
+
+            docker stop fastapi-app || true
+            docker rm fastapi-app || true
+
+            docker build -t fastapi-app .
+            docker run -d -p 8000:8000 --name fastapi-app fastapi-app
+
+            sudo systemctl restart nginx
+          EOF
+
