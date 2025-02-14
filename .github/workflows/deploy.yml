@@ -10,7 +10,6 @@ on:
 
 jobs:
   deploy:
-    name: Deploy Application
     runs-on: ubuntu-latest
 
     steps:
@@ -22,12 +21,12 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 44.201.229.108 >> ~/.ssh/known_hosts
+          ssh-keyscan -H 34.203.206.39 >> ~/.ssh/known_hosts
 
 
       - name: Deploy to EC2
         run: |
-          ssh ubuntu@44.201.229.108 << 'EOF'
+          ssh ubuntu@34.203.206.39 << 'EOF'
             export PATH=/bin:/usr/bin:$PATH
 
 
